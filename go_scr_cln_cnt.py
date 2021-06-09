@@ -2,28 +2,22 @@ import twint
 import time
 from collections import Counter
 import csv
+import global_vars as gva #import global variables
 
-# Define Variables
-twUserArray = ['peteraltmaier', 'AkbulutGokay', 'aggelidis_fdp', 'bela_bach', 'badulrichmartha', 'Thomas_Bareiss', 'BerndBaumannAfD', 'DietmarBartsch', 'nicole_ae_bauer', 'jensbeeck', 'lgbeutin', 'MarcBernhardAfD', 'andreasbleckmdb', 'PeterBoehringer', 'StBrandner', 'JuergenBraunAfD', 'Marcus_Buehl', 'marcobuelow', 'KarambaDiaby', 'ekindeligoez', 'FabioDeMasi', 'MarcusFaber', 'DFoest', 'Erhard_Grundl', 'RonjaKemmer', 'tobiaslindner']
-twUserName = ''
-twPath = '/tweets_clean.csv'
-twCounted = '/word_count.txt'
-mostOccurMax = 5
 
 # START LOOP
-for index in range(len(twUserArray)):
-    twUserName = twUserArray[index]
-    print(twUserName)
+for index in range(len(gva.twUserArray)):
+    gva.twUserName = gva.twUserArray[index]
+    print(gva.twUserName)
 
     # SCRAPER
     c = twint.Config()
 
-    c.Username = twUserName
-    #c.Limit = False
+    c.Username = gva.twUserName
     c.Filter_retweets = False
     c.Custom["tweet"] = ["tweet"]
     c.Store_csv = True
-    c.Output = twUserName
+    c.Output = gva.twUserName
 
     twint.run.Profile(c)
 
@@ -32,7 +26,7 @@ for index in range(len(twUserArray)):
 
 
     # CLEANER
-    with open(twUserName + '/tweets.csv', encoding='utf8') as oldfile, open(twUserName + twPath, 'w', encoding='utf8') as newfile:
+    with open(gva.twUserName + '/tweets.csv', encoding='utf8') as oldfile, open(gva.twUserName + gva.twPath, 'w', encoding='utf8') as newfile:
         for i, line in enumerate(oldfile):
             if i == 0 or not line.startswith('RT'):
                 newfile.write(line)
@@ -43,7 +37,7 @@ for index in range(len(twUserArray)):
 
     # COUNTER
     # CONFIG
-    csv_file = twUserName + twPath
+    csv_file = gva.twUserName + gva.twPath
     unwanted_words = ['rt', '-', '&amp;', '#', 'http://', 'https://', 'die', 'der', 'und', 'für', 'das', 'von', 'in', 'nicht', 'ist', 'den', 'im', 'haben', 'habe', 'ein', 'mit', 'bei', 'an', 'dass', 'sind', 'werden', 'viele', 'schon', 'es', 'dem', 'als', 'des', 'vor', 'auf', 'wurde', 'aus', 'eine', 'was']
     open_csv_list = []
 
@@ -56,7 +50,7 @@ for index in range(len(twUserArray)):
     # Count the lines in the csv file
     with open(csv_file, 'r', encoding='utf8') as f:
       file = csv.reader(f)
-      row_count = sum(1 for row in file) # Count lines in csv file
+      row_count = sum(1 for row in file) #Count
 
     # Convert nested list to list
     nn_list = [' '.join([str(c) for c in lst]) for lst in open_csv_list]
@@ -76,19 +70,19 @@ for index in range(len(twUserArray)):
 
     # most_common() produces k frequently encountered
     # input values and their respective counts.
-    most_occur = count_instance.most_common(mostOccurMax)
+    most_occur = count_instance.most_common(gva.mostOccurMax)
 
     print(most_occur)
 
     # Write the top n of the most occured words
-    list_count = open(twUserName + twCounted, "w", encoding="utf8")
+    list_count = open(gva.twUserName + gva.twCounted, "w", encoding="utf8")
     for t in most_occur:
       line_mo = ' '.join(str(x) for x in t)
       list_count.write(line_mo + '\n')
     list_count.close()
 
     # Append the csv line counter
-    with open(twUserName + twCounted, "a", encoding="utf8") as list_count_append:
+    with open(gva.twUserName + gva.twCounted, "a", encoding="utf8") as list_count_append:
       list_count_append.write(str(row_count))
     list_count_append.close()
 
