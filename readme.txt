@@ -1,3 +1,9 @@
+THIS PROJECT IS DEPRECATED - FEEL FREE TO USE SOME PARTS OR THE WHOLE CODE
+
+
+Scraping tweets from twitter users. Without an API, but using Twint.
+
+
 Install Twint via following commands:
 
 Inside a VENV:
